@@ -1,0 +1,404 @@
+## This is a personal config for PMM. You can edit this file to your needs and be sure to fill in your personal keys 
+## Overlays included for Movies in 4K, 1080p. Collections include IMDB, IMAX, DV, MCU, STar Wars. Star Trek, Harry Potter
+## Overlays included for TV Shows in 4K. Collections inlude IMDB, Main Streaming Platforms and Major Networks.
+##### Check your LIBRARY names in plex and copy them to the library names below. If your LIBRARY names are anything other than "Movies" and "TV Shows", change the names to match
+##### ie. change the "Movies" to your movie library name and change "TV Shows" to your tv library name
+## Fill in your plex IP under Settings Category along with plex token
+## This version includes Notifiarr settings and webhook 
+## TMDB and mdblist accounts are required for this scrypt to work. Fill in your apikeys where there are XXXXXXXXXXXXXXXXXXX
+
+libraries:                       # This is called out once within the config.yml file
+  movies:  ################# THIS IS THE NAME OF YOUR "MOVIE" LIBRARY IN PLEX. IF YOUR MOVIE LIBRARY IS NAMED DIFFERENTLY THEN COPY THAT NAME HERE.
+    report_path: config/missing/Movies_report.yml
+    collection_files:
+    - pmm: basic                 # Creates Collections for New Episodes from last 7 days and Newly Released from past 90 days
+    - pmm: imdb                  # Creates IMDB Collections for Popular and Top 250
+    - pmm: trakt
+    - pmm: oscars
+    - pmm: actor
+    - pmm: seasonal           # Other Holidays in the wiki  
+    - pmm: universe
+      template_variables:
+        use_separator: false
+        append_data:     # this adds custom lists imdb, trakt, or mdb
+          mcu2: Marvel Chronological Order   # name of custom collection
+        imdb_list_mcu2: https://www.imdb.com/list/ls029032797/   # link to list
+        url_poster_mcu2: https://raw.githubusercontent.com/meisnate12/Plex-Meta-Manager-Images/master/universe/mcu.jpg # poster url (Wanted MCU but custom order, still use default assests from PMM) 
+        exclude:
+        - avp     #Alien / Predator
+        - arrow   #Arrowverse
+        - dca     #DC Animated Universe
+        - dcu     #DC Extended Universe
+        - fast    #Fast & Furious
+        - marvel  #In Association With Marvel
+        - mcu     #Marvel Cinematic Universe
+        - middle  #Middle Earth
+        - mummy   #The Mummy Universe
+        - rocky   #Rocky / Creed
+        #- trek   #Star Trek
+        #- star   #Star Wars Universe
+        - askew   #View Askewniverse
+        #- wizard #Wizarding World
+        - xmen    #X-Men Universe
+        visible_home_mcu2: true  #This will show a collection on home screen in Plex, this case its Marvel Cronological Order
+    - file: config/Movies.yml
+    - file: config/Movie Collections.yml #This pulls the "Movie Collections.yml" file and makes a custom Collections
+    overlay_files:
+    #- reset_overlays: plex      # reset overlays to plex or tmdb
+    - remove_overlays: false     # Set this to true to remove all overlays
+    - pmm: ribbon
+    - pmm: audio_codec
+      template_variables:
+        use_pcm: false
+        use_flac: false
+        use_opus: false
+        use_mp3: false
+        use_aac: false
+        horizontal_align: left
+        vertical_align: bottom
+        style: standard
+    - pmm: resolution
+      template_variables:
+        use_720p: false
+        use_576p: false
+        use_480p: false
+    - pmm: ratings                                  # Ratings with custom fonts matched to the style of the rating, font_size, and on the right in 'square' format
+      template_variables:
+        rating1: critic
+        rating1_image: rt_tomato
+        rating1_font: config/overlays/fonts/Adlib.ttf
+        rating1_font_size: 63
+
+        rating2: user
+        rating2_image: imdb
+        rating2_font: config/overlays/fonts/Impact.ttf
+        rating2_font_size: 70
+
+        rating3: audience
+        rating3_image: tmdb
+        rating3_font: config/overlays/fonts/Avenir_95_Black.ttf
+        rating3_font_size: 70
+
+        horizontal_position: right
+    operations:
+      #mass_poster_update: plex                   #  Resets posters to tmdb or plex
+      mass_user_rating_update: mdb_imdb           #  This operation will update the user rating in plex with imdb ratings information gathered through mdblist.com (mdblist config required)
+      mass_critic_rating_update: mdb_tomatoes     #  This operation will update the critic rating in plex with rotten tomatoes ratings information
+      mass_audience_rating_update: mdb_tmdb       #  This operation will update the audience rating in plex with TMDb ratings information
+
+  TV shows: ########################### THIS IS THE NAME OF YOUR "TV SHOW" LIBRARY IN PLEX. IF YOUR TV LIBRARY IS NAMED DIFFERENTLY THEN COPY THAT NAME HERE. 
+    report_path: config/missing/TV_report.yml
+    collection_files:
+    - pmm: basic                 # Creates Collections for New Episodes from last 7 days and Newly Released from past 90 days
+    - pmm: imdb                  # Creates IMDB Collections for Popular and Top 250 
+    - pmm: actor
+    - pmm: trakt
+    - pmm: emmy
+    - pmm: network  # This will create collections for the following Networks. Note that the list has some networks marked excluded since we have PMM streaming running also (Amazon, Netflix, Peacock etc)
+      template_variables:
+        use_separator: false
+        sync_mode: append
+        sep_style: stb
+          #name_format: <<key_name>> Shows
+        include:    ##Remove "#" infront of lines below to add network to Collections
+            #- A&E
+            #- ABC
+            #- AMC
+            #- Animal Planet
+            #- BBC
+            #- BET
+            #- Cartoon Network
+            #- Channel 4
+            #- Channel 5
+            #- CBC
+            #- CBS
+            #- Comedy Central
+            #- Discovery
+            #- Disney Channel
+            #- E!
+            #- ESPN
+            #- Food Network
+            #- FOX
+            #- Hallmark
+            #- HBO
+            #- HGTV
+            #- History
+            #- ITV
+            #- Lifetime
+            #- MTV
+            #- National Geographic
+            #- NBC
+            #- Nickelodeon
+            #- Paramount Network
+            #- PBS
+        - Showtime
+            #- Sky
+        - Starz
+            #- The CW
+            #- TLC
+            #- TNT
+            #- UKTV
+            #- USA
+            #- YouTube
+            ####STREAMING NETWORKS#### This has moved to the PMM Streaming section (do not enable if you have "-PMM Streaming" On since this PMM config removes the word "shows" in the collection title name during generation. it will cause collection errors and duplicates)
+            #- Apple TV+
+            #- Amazon
+            #- discovery+
+            #- Disney+
+            #- HBO Max
+            #- Hulu
+            #- Netflix
+            #- Paramount+
+            #- Peacock          
+        addons:    #these addons bundle additional network Collections under a main collection. 
+          Paramount+:       #main network
+          - Paramount Network          #network you want bundle under the "Paramoun+" collection
+          Peacock:
+          - NBC
+          HBO Max:
+          - HBO
+        sort_by: title.asc
+    - pmm: streaming # This will create collections for the following streaming services. 
+      template_variables:
+          #collection_section: "050"  #this setting will bundle the streaming collections with "-pmm networks". left disabled, streaming services will appear before networks and everything will be listed alphabetically. default value is "030"  
+        use_separator: false
+        sep_style: stb
+        sync_mode: append
+          #visible_library_disney: true #enable if you want a specific streaming service to appear in your library tab.
+          #visible_home_disney: true    #enable if you want a specific streaming service to appear in your home tab.
+          #visible_shared_disney: true  #enable if you want a specific streaming service to appear in your friends home tab.
+          #sonarr_add_missing_hulu: true #adds all missing shows to sonarr. BE CAREFUL AS SOME SERVICES HAVE OVER 1000 SHOWS
+        name_format: <<key_name>>    #renames the collections for each streaming service to keep the title format for all collections the same. "Apple TV+ Shows" is renamed to "Apple TV+"  
+          #originals_only: true  #only show the streaming service's original content 
+        exclude:
+            #- appletv
+        - bet
+        - britbox
+        - crave
+        - crunchyroll
+            #- discovery
+            #- disney
+        - hayu
+            #- max
+            #- hulu
+            #- netflix
+        - now
+            #- paramount
+            #- peacock
+            #- amazon
+        - showtime
+        sort_by: title.asc
+          #####################
+          #####################
+          #IF YOUR COLLECTIONS HAVE DUPLICATES OR IF YOU HAVE RUN ANY OF MY PREVIOUS CONGIFS USE THE OPERATIONS SETTING TO DELETE ALL MANAGED COLLECTIONS AND START FRESH 
+    overlay_files:
+    #- reset_overlays: plex      #reset overlays to plex or tmdb
+    - remove_overlays: false     # Set this to true to remove all overlays
+    - pmm: ribbon
+    - pmm: resolution # Resolution overlays at shows level, Set the value to "true" if you want these formats on
+      template_variables:
+        use_1080p: false
+        use_720p: false
+        use_576p: false
+        use_480p: false
+    - pmm: resolution # Resolution overlays at season level, Set the value to "true" if you want these formats on
+      template_variables:
+        overlay_level: season
+        use_1080p: false
+        use_720p: false
+        use_576p: false
+        use_480p: false
+    - pmm: resolution # Resolution overlays at episode level, Set the value to "true" if you want these formats on
+      template_variables:
+        overlay_level: episode
+        use_1080p: false
+        use_720p: false
+        use_576p: false
+        use_480p: false
+    - pmm: audio_codec # Audio codec overlays at shows level, Set the value to "true" if you want these formats on. I recommend these setting to avoid too much clutter. 
+      template_variables:
+        use_dtsx: false
+        use_plus_atmos: false
+        use_ma: false
+        use_hra: false
+        use_plus: false
+        use_dtses: false
+        use_dts: false
+        use_digital: false
+        use_pcm: false
+        use_flac: false
+        use_opus: false
+        use_mp3: false
+        use_aac: false
+        horizontal_align: left
+        vertical_align: bottom
+        style: standard
+    - pmm: audio_codec # Audio codec overlays at season level, Set the value to "true" if you want these formats on
+      template_variables:
+        use_dtsx: false
+        use_plus_atmos: false
+        use_ma: false
+        use_hra: false
+        use_plus: false
+        use_dtses: false
+        use_dts: false
+        use_digital: false
+        use_pcm: false
+        use_flac: false
+        use_opus: false
+        use_mp3: false
+        use_aac: false
+        horizontal_align: left
+        vertical_align: bottom
+        style: standard
+        overlay_level: season
+    - pmm: audio_codec # Audio codec overlays at episode level, Set the value to "true" if you want these formats on
+      template_variables:
+        use_dtsx: false
+        use_plus_atmos: false
+        use_ma: false
+        use_hra: false
+        use_plus: false
+        use_dtses: false
+        use_dts: false
+        use_digital: false
+        use_pcm: false
+        use_flac: false
+        use_opus: false
+        use_mp3: false
+        use_aac: false
+        horizontal_align: left
+        vertical_align: bottom
+        style: standard
+        overlay_level: episode
+    - pmm: ratings         # Ratings overlays for TV Shows with custom fonts matched to the style of the rating, font_size, and on the right in 'square' format.
+      template_variables:
+        rating1: critic
+        rating1_image: rt_tomato
+        rating1_font: config/overlays/fonts/Adlib.ttf
+        rating1_font_size: 63
+
+        rating2: user
+        rating2_image: imdb
+        rating2_font: config/overlays/fonts/Impact.ttf
+        rating2_font_size: 70
+
+        rating3: audience
+        rating3_image: tmdb
+        rating3_font: config/overlays/fonts/Avenir_95_Black.ttf
+        rating3_font_size: 70
+
+        horizontal_position: right
+    #- pmm: ratings                                  # Ratings overlays for individual episodes of TV Shows
+      #template_variables:
+        #rating1: critic
+        #rating1_image: imdb
+        #rating1_font: config/overlays/fonts/Impact.ttf
+        #rating1_font_size: 70
+
+        #rating2: audience
+        #rating2_image: tmdb
+        #rating2_font: config/overlays/fonts/Avenir_95_Black.ttf
+        #rating2_font_size: 70
+
+        #horizontal_position: right
+        #overlay_level: episode
+    operations:
+      #delete_collections:      ##### IF YOUR COLLECTIONS SHOW DUPLICATES OR YOU USED MY PREVIOUS CONFIGS RUN THIS ONCE AND THEN DISABLE FOR A FRESH COLLECTION START.
+        #configured: false      ##### DO NOT MANUALLY DELETE THE COLLECTIONS BECAUSE THE "TAGS" PMM ASSIGNS WILL STILL BE ATTACHED TO YOUR SHOWS
+        #managed: true
+      #mass_poster_update: plex                       #resets posters to tmdb or plex
+      mass_user_rating_update: mdb_imdb                  #  This operation will update the user rating in plex with imdb ratings information gathered through mdblist.com (mdblist config required)
+      mass_critic_rating_update: mdb_tomatoes            #  This operation will update the critic rating in plex with rotten tomatoes ratings information
+      mass_audience_rating_update: mdb_tmdb              #  This operation will update the audience rating in plex with TMDb ratings information
+      #mass_episode_critic_rating_update: mdb_imdb       # Update critic ratings with imdb for episodes not needed for tautilli
+      #mass_episode_audience_rating_update: mdb_tmdb     # Update audience ratings with tmdb for episodes not needed for tautulli
+
+
+
+settings:
+  cache: true
+  cache_expiration: 60
+  asset_directory: config/assets
+  missing_path: config/missing
+  asset_folders: false
+  asset_depth: 0
+  create_asset_folders: false
+  prioritize_assets: false
+  dimensional_asset_rename: false
+  download_url_assets: false
+  show_missing_season_assets: false
+  show_missing_episode_assets: false
+  show_asset_not_needed: false
+  sync_mode: sync
+  minimum_items: 1
+  default_collection_order:
+  delete_below_minimum: true
+  delete_not_scheduled: false
+  run_again_delay: 2
+  missing_only_released: false
+  only_filter_missing: false
+  show_unmanaged: true
+  show_filtered: false
+  show_options: false
+  show_missing: false
+  show_missing_assets: true
+  save_report: true
+  tvdb_language: eng
+  ignore_ids:
+  ignore_imdb_ids:
+  item_refresh_delay: 0
+  playlist_sync_to_user: all
+  playlist_exclude_user:
+  playlist_report: false
+  verify_ssl: true
+  custom_repo:
+  check_nightly: false
+  show_unconfigured: true
+  playlist_exclude_users:
+  run_order:
+  - operations
+  - metadata
+  - collections
+  - overlays
+#webhooks:                        # This is a webhook for notifiarr.  
+  #error: notifiarr
+  #version: notifiarr
+  #run_start: notifiarr
+  #run_end: notifiarr
+  #changes: notifiarr
+  #delete: notifiarr
+plex:                            # Can be individually specified per library as well; REQUIRED for the script to run
+  url: http://127.0.0.1:32400   #fill in your IP address here ex 192.168.1.2 or 127.0.0.2 or whatever ip you use to access plex locally. 
+  token: LPoh2YnuxSu2wbbE2q2x
+  timeout: 60
+  clean_bundles: true
+  empty_trash: true
+  optimize: false
+#notifiarr:
+  #apikey: xxxxxxxxxxxxxxxxxxxxxxxxxx
+  db_cache:
+tmdb:                            # REQUIRED for the script to run you need to create an account on tmdb.com
+  apikey: 8afe199de63beaf5ee97ba85ba874aca
+  language: en
+  cache_expiration: 60
+  region:
+omdb:
+  apikey: bbbf5653
+  cache_expiration: 60
+  region:
+trakt:                           # Some collections (Star Trek) will pull from trakt and will require you to create an account 
+  client_id: fdb5a8ffa42f98f3e416ecd0061b034f2ad366a169c793901869f56e6229cab7
+  client_secret: b816c71c0aa7e3894d9a66b5a7929b0659eee37fe5cfd027ad4db647c4f0f1af
+  pin: 2666b0f5
+  authorization:
+    # everything below is autofilled by the script
+    access_token: 
+    token_type: 
+    expires_in: 
+    refresh_token: 
+    scope: 
+    created_at: 
+mdblist:                         # REQUIRED for the script to run you need to create an account on mdblist.com, you can create an account with trakt and link it. 
+  apikey: 5nvns7dd6zrwygjzxzi1w3c1o
+  cache_expiration: 60
